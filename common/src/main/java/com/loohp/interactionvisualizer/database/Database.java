@@ -28,6 +28,7 @@ import com.loohp.interactionvisualizer.utils.BitSetUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -115,7 +116,9 @@ public class Database {
     private static void sqliteSetup(boolean echo) {
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:plugins/InteractionVisualizer/database.db");
+            // Use the plugin's data folder instead of a hardcoded "plugins/InteractionVisualizer"
+            // path, so custom plugin loaders that relocate the data folder keep working.
+            connection = DriverManager.getConnection("jdbc:sqlite:" + new File(InteractionVisualizer.plugin.getDataFolder(), "database.db").getPath());
             if (echo) {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[InteractionVisualizer] Opened Sqlite database successfully");
             }
